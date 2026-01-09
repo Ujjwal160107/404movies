@@ -1,11 +1,10 @@
 'use client';
 
+import { useState, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Hero from '../components/Hero';
 import MovieRow from '../components/MovieRow';
 import MovieCard from '../components/MovieCard';
-import Link from 'next/link';
-import { useState, useEffect, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
 
 function HomeContent() {
   const searchParams = useSearchParams();
@@ -110,7 +109,11 @@ function HomeContent() {
 
 export default function Home() {
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-background text-foreground"><p className="animate-pulse">Loading regrets...</p></div>}>
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-background text-foreground">
+        <p className="animate-pulse">Loading regrets...</p>
+      </div>
+    }>
       <HomeContent />
     </Suspense>
   );
