@@ -4,14 +4,17 @@ import Hero from '../components/Hero';
 import MovieRow from '../components/MovieRow';
 import MovieCard from '../components/MovieCard';
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 
-export default function Home() {
+function HomeContent() {
   const searchParams = useSearchParams();
   const keyword = searchParams.get('keyword') || '';
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  // Use environment variable for API URL, fallback to localhost for dev
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000';
 
   useEffect(() => {
     const fetchMovies = async () => {
@@ -24,7 +27,7 @@ export default function Home() {
             setMovies(JSON.parse(cachedMovies));
             setLoading(false);
             // Background refresh
-            fetch('http://127.0.0.1:5000/api/movies')
+            fetch(`${API_URL}/api/movies`)
               .then(res => res.json())
               .then(data => {
                 setMovies(data);
@@ -36,7 +39,7 @@ export default function Home() {
         }
 
         // Fetch from API
-        const res = await fetch(`http://127.0.0.1:5000/api/movies?keyword=${keyword}`);
+        const res = await fetch(`${API_URL}/api/movies?keyword=${keyword}`);
         if (!res.ok) throw new Error('Failed to fetch');
 
         const data = await res.json();
@@ -55,7 +58,7 @@ export default function Home() {
     };
 
     fetchMovies();
-  }, [keyword]);
+  }, [keyword, API_URL]);
 
   // Group by category
   const categories = {};
@@ -102,5 +105,13 @@ export default function Home() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-background text-foreground"><p className="animate-pulse">Loading...</p></div>}>
+      <HomeContent />
+    </Suspense>
   );
 }
