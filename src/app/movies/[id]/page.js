@@ -1,19 +1,46 @@
+'use client';
+
 import { Star, AlertTriangle, Clock, PlayCircle, ThumbsDown } from 'lucide-react';
 import Link from 'next/link';
+import { useState, useEffect } from 'react';
+import { useParams } from 'next/navigation';
 
-async function getMovie(id) {
-    try {
-        const res = await fetch(`http://127.0.0.1:5000/api/movies/${id}`, { cache: 'no-store' });
-        if (!res.ok) return null;
-        return res.json();
-    } catch (error) {
-        return null;
+export default function MovieDetails() {
+    const params = useParams();
+    const id = params?.id;
+    const [movie, setMovie] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    // Use environment variable for API URL
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000';
+
+    useEffect(() => {
+        if (!id) return;
+
+        const fetchMovie = async () => {
+            try {
+                const res = await fetch(`${API_URL}/api/movies/${id}`, { cache: 'no-store' });
+                if (!res.ok) throw new Error('Failed to fetch');
+                const data = await res.json();
+                setMovie(data);
+            } catch (error) {
+                console.error("Error fetching movie:", error);
+                setMovie(null);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchMovie();
+    }, [id, API_URL]);
+
+    if (loading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-background text-foreground">
+                <p className="animate-pulse text-muted">Loading...</p>
+            </div>
+        );
     }
-}
-
-export default async function MovieDetails({ params }) {
-    const resolvedParams = await params;
-    const movie = await getMovie(resolvedParams.id);
 
     if (!movie) {
         return (
