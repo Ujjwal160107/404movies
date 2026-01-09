@@ -1,3 +1,6 @@
+import Link from 'next/link';
+import { Play } from 'lucide-react';
+
 const Hero = () => {
     return (
         <div className="relative h-[80vh] w-full flex items-center justify-center overflow-hidden">
@@ -18,10 +21,13 @@ const Hero = () => {
                     Error 404: Sleep schedule not found.
                 </p>
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                    <button className="px-8 py-3 bg-accent text-white rounded-md font-bold hover:bg-red-700 transition-colors flex items-center gap-2">
-                        ▶ Waste Time
-                    </button>
-                    <button className="px-8 py-3 bg-white/10 backdrop-blur-sm border border-white/20 text-white rounded-md font-bold hover:bg-white/20 transition-colors">
+                    <Link href="/movies">
+                        <button className="px-8 py-3 bg-accent text-white rounded-md font-bold hover:bg-red-700 transition-colors flex items-center gap-2 cursor-pointer">
+                            <Play className="w-5 h-5 fill-current" />
+                            Waste Time
+                        </button>
+                    </Link>
+                    <button className="px-8 py-3 bg-white/10 backdrop-blur-sm border border-white/20 text-white rounded-md font-bold hover:bg-white/20 transition-colors cursor-pointer">
                         + Add to Watchlist
                     </button>
                 </div>

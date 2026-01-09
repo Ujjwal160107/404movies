@@ -1,5 +1,6 @@
 import './globals.css';
 import Navbar from '../components/Navbar';
+import { AuthProvider } from '../context/AuthContext';
 
 export const metadata = {
   title: '404movies',
@@ -9,9 +10,11 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className="antialiased min-h-screen bg-background text-foreground">
-        <Navbar />
-        <main>{children}</main>
+      <body className="antialiased bg-background text-foreground">
+        <AuthProvider>
+          <Navbar />
+          <main>{children}</main>
+        </AuthProvider>
       </body>
     </html>
   );

@@ -2,13 +2,13 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useAuth } from '../../context/AuthContext';
 
 export default function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState(null);
-    const router = useRouter();
+    const { login } = useAuth(); // Use Context
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -21,10 +21,7 @@ export default function Login() {
             });
             const data = await res.json();
             if (res.ok) {
-                localStorage.setItem('userInfo', JSON.stringify(data));
-                // Dispatch event so Navbar updates immediately
-                window.dispatchEvent(new Event('auth-change'));
-                router.push('/');
+                login(data); // Use context login function
             } else {
                 setError(data.message || 'Failed to login');
             }
